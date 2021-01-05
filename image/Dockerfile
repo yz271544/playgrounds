@@ -20,7 +20,7 @@
 # Build PyFlink Playground Image
 ###############################################################################
 
-FROM flink:1.10.0-scala_2.11
+FROM flink:1.11.3-scala_2.11-java8
 
 # Install python
 RUN set -ex; \
@@ -35,15 +35,15 @@ RUN set -ex; \
 RUN set -ex; \
   apt-get update; \
   python -m pip install --upgrade pip; \
-  pip install apache-flink
+  pip install apache-flink==1.11.3
 
-ARG FLINK_VERSION=1.10.0
+ARG FLINK_VERSION=1.11.3
 
 # Download connector libraries
-RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/${FLINK_VERSION}/flink-json-${FLINK_VERSION}.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/${FLINK_VERSION}/flink-csv-${FLINK_VERSION}.jar; \
+RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/${FLINK_VERSION}/flink-csv-${FLINK_VERSION}.jar; \
+#    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/${FLINK_VERSION}/flink-json-${FLINK_VERSION}.jar; \
 #    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-avro/${FLINK_VERSION}/flink-avro-${FLINK_VERSION}.jar; \
-    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-jdbc_2.11/${FLINK_VERSION}/flink-jdbc_2.11-${FLINK_VERSION}.jar; \
+#    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-jdbc_2.11/${FLINK_VERSION}/flink-jdbc_2.11-${FLINK_VERSION}.jar; \
     wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar; \
     wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-hive_2.11/${FLINK_VERSION}/flink-connector-hive_2.11-${FLINK_VERSION}.jar; \
     wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-hbase_2.11/${FLINK_VERSION}/flink-hbase_2.11-${FLINK_VERSION}.jar; \
@@ -58,11 +58,11 @@ RUN wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flin
     echo "rest.port: 8088" >> /opt/flink/conf/flink-conf.yaml;
 
 # Install hbase and run
-COPY ./hbase-fat.jar /opt/flink/lib
-COPY ./hbase-1.4.13-bin.tar.gz /opt
+#COPY ./hbase-fat.jar /opt/flink/lib
+#COPY ./hbase-1.4.13-bin.tar.gz /opt
 #RUN wget -P /opt/ http://apache.spinellicreations.com/hbase/1.4.13/hbase-1.4.13-bin.tar.gz;
-RUN tar zxvf /opt/hbase-1.4.13-bin.tar.gz -C /opt
-RUN echo "export JAVA_HOME=/usr/local/openjdk-8" >> /opt/hbase-1.4.13/conf/hbase-env.sh
-RUN echo "\n<configuration>\n  <property>\n    <name>hbase.tmp.dir</name>\n    <value>tmp</value>  </property>\n</configuration>" > /opt/hbase-1.4.13/conf/hbase-site.xml
+#RUN tar zxvf /opt/hbase-1.4.13-bin.tar.gz -C /opt
+#RUN echo "export JAVA_HOME=/usr/local/openjdk-8" >> /opt/hbase-1.4.13/conf/hbase-env.sh
+#RUN echo "\n<configuration>\n  <property>\n    <name>hbase.tmp.dir</name>\n    <value>tmp</value>  </property>\n</configuration>" > /opt/hbase-1.4.13/conf/hbase-site.xml
 
 WORKDIR /opt/flink
